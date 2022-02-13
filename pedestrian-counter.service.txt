@@ -6,7 +6,7 @@ After=multi-user.target
 WorkingDirectory=/home/pi/pedestrian-counter
 Type=simple
 User=pi
-ExecStart=/home/pi/pedestrian-counter/start_mysql.sh ped-detector --headless
+ExecStart=/home/pi/git/pedestrian-counter/start_csv.sh venv --headless
 Restart=always
 
 

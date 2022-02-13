@@ -35,7 +35,7 @@ def map_value(x, in_min, in_max, out_min, out_max):
 
 def get_filepath(relative_filepath):
     # function to get the absolute filepath of the file you pass in
-    dir = os.path.dirname(__file__)
+    dir = os.path.dirname('/home/pi/git/pedestrian-counter/data/')
     filename = os.path.join(dir, relative_filepath)
     return filename
 
@@ -56,6 +56,7 @@ def csv_save(delay):
         proc = Process(
             target=csv_save_append, name='csv_proc', args=(payload, ))
         proc.start()
+        print("Saved to CSV.")
         time.sleep(delay)
 
 
@@ -71,12 +72,13 @@ def count_within_range(list1, l, r):
             c += 1
     return c
 
-
-payload = [str(datetime.now().isoformat()), 0, 0, 0]
+timestart = str(datetime.now().isoformat())
+payload = [str(datetime.now().isoformat()), timestart, 0, 0]
 
 
 def main():
     global payload
+    global timestart
 
     # argument parsing
     parser = argparse.ArgumentParser()
@@ -153,6 +155,8 @@ def main():
 
     # For headless pygame
     if args.headless:
+        print("App understands we are running headless.")
+        os.environ['SDL_VIDEODRIVER'] = 'dummy'
         os.putenv('SDL_VIDEODRIVER', 'dummy')
     else:
         os.putenv('SDL_FBDEV', '/dev/fb1')
@@ -168,6 +172,8 @@ def main():
     # sensor is an 8x8 grid so lets do a square
     height = 240
     width = 240
+#    height = 480
+#    width = 480
 
     # the list of colors we can choose from
     black = Color("black")
@@ -258,8 +264,13 @@ def main():
         for row in sensor.pixels:
             pixels = pixels + row
 
+        #print(ct)
+
+#        payload = [str(datetime.now().isoformat()),
+#                   ct.get_count(), total_up, total_down]
+
         payload = [str(datetime.now().isoformat()),
-                   ct.get_count(), total_up, total_down]
+                   timestart, total_up, total_down]
 
         mode_result = stats.mode([round(p) for p in pixels])
         mode_list.append(int(mode_result[0]))
