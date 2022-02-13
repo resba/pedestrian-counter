@@ -126,3 +126,8 @@ src/thethingsnetwork-send-v1
 
 #json files
 *.json
+
+#data folder
+data/**
+
+.env
